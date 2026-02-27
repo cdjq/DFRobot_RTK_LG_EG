@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring DFRobot_RTK_LG_EG
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+DFRobot_RTK_LG_EG	KEYWORD1
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin	KEYWORD2
+configNtrip KEYWORD2
+updateGGA	KEYWORD2
+getTime	KEYWORD2
+getLatitude	KEYWORD2
+getLatitudeDirection	KEYWORD2
+getLongitude	KEYWORD2
+getLongitudeDirection	KEYWORD2
+getSatellites	KEYWORD2
+getAltitude	KEYWORD2
+getGeoidSeparation	KEYWORD2
+getFixQuality	KEYWORD2
+getDiffAge	KEYWORD2
+CSVSlaveCfg	KEYWORD2
+CSVDelCfg	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+SLAVE_CFG_RMC	LITERAL1
+SLAVE_CFG_GGA	LITERAL1
+SLAVE_CFG_GSV	LITERAL1
+SLAVE_CFG_GSA	LITERAL1
+SLAVE_CFG_VTG	LITERAL1
+SLAVE_CFG_GLL	LITERAL1
+SLAVE_CFG_ALL	LITERAL1
