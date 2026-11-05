@@ -32,6 +32,8 @@ This repository provides an Arduino library for the RTK module. The library main
 - Reading GNSS GGA data  
 - Configuring CSV file logging
 
+Examples: `configNtrip`, `printGGAData`, `configCSV`.
+
 ## Library Installation
 
 There are two ways to install and use this library:<br>
@@ -74,7 +76,7 @@ bool updateGGA(void);
  * @brief Get time string from GGA
  * @param none
  * @return time string
- * @note Format: YYYY-MM-DD HH:MM:SS
+ * @note Format: hhmmss.ss
  */
 String getTime(void);
 
@@ -119,7 +121,6 @@ String getLongitudeDirection(void);
  * @brief Get number of satellites used
  * @param none
  * @return satellite count
- * @note 0: none, 1: 1 satellite, 2: 2 satellites, ..., 20: 20 satellites
  */
 String getSatellites(void);
 
@@ -128,6 +129,7 @@ String getSatellites(void);
  * @brief Get altitude
  * @param none
  * @return altitude in meters
+ * @note Altitude in meters
  */
 String getAltitude(void);
 
@@ -136,6 +138,7 @@ String getAltitude(void);
  * @brief Get geoid separation
  * @param none
  * @return separation in meters
+ * @note Geoid separation in meters
  */
 String getGeoidSeparation(void);
 
@@ -144,6 +147,7 @@ String getGeoidSeparation(void);
  * @brief Get fix quality
  * @param none
  * @return fix quality value
+ * @note Common values: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
  */
 String getFixQuality(void);
 
@@ -156,20 +160,21 @@ String getFixQuality(void);
 String getDiffAge(void);
 
 /**
- * @fn CSVSlaveCfg
- * @brief Configure CSV data types to be logged; multiple flags can be ORed, e.g. SLAVE_CFG_RMC | SLAVE_CFG_GGA
- * @param slave_cfg: data type flags (one or more eCSVCfg_t values ORed)
+ * @fn configCSV
+ * @brief Choose which NMEA sentences are written to CSV. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
+ * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
  * @return none
+ * @note CSV_CFG_ALL is 0x40 and means all sentences
  */
-void CSVSlaveCfg(uint8_t slave_cfg);
+void configCSV(uint8_t csv_cfg);
 
 /**
- * @fn CSVDelCfg
- * @brief Delete CSV data types; multiple flags can be ORed
- * @param del_cfg: data type flags (one or more eCSVCfg_t values ORed)
+ * @fn deleteCSV
+ * @brief Delete stored CSV data for the selected sentence types. Multiple flags can be ORed
+ * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
  * @return none
  */
-void CSVDelCfg(uint8_t del_cfg);
+void deleteCSV(uint8_t csv_cfg);
 ```
 
 ## Compatibility

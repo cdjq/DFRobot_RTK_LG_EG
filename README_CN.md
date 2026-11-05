@@ -16,7 +16,7 @@
 * [概述](#概述)
 * [库安装](#库安装)
 * [方法](#方法)
-* [兼容性](#兼容性y)
+* [兼容性](#兼容性)
 * [历史](#历史)
 * [创作者](#创作者)
 
@@ -25,6 +25,8 @@
 提供一个Arduino库给RTK模块，此库具有以下功能：
   获取 gnss GGA的数据
   配置 CSV文件存储
+
+示例：`configNtrip`、`printGGAData`、`configCSV`。
 
 ## 库安装
 这里提供两种使用本库的方法：<br>
@@ -49,13 +51,13 @@
      * @param port: 端口号
      * @param user: 用户名
      * @param password: 密码
-     * * @param mountpoint: 挂载点
+     * @param mountpoint: 挂载点
      * @return none
      */
     void configNtrip(String host, String port, String user, String password, String mountpoint);
     
     /**
-     * @fn update
+     * @fn updateGGA
      * @brief 更新GGA数据
      * @param none
      * @return true: 成功, false: 失败
@@ -67,7 +69,7 @@
      * @brief 获取时间
      * @param none
      * @return 时间
-     * @note 格式: YYYY-MM-DD HH:MM:SS
+     * @note 格式: hhmmss.ss
      */
     String getTime(void);
     /**
@@ -75,7 +77,7 @@
      * @brief 获取纬度
      * @param none
      * @return 纬度
-     * @note 格式: DDMM.MMMM(度分秒)
+     * @note 格式: DDMM.MMMM（度和分）
      */
     String getLatitude(void);
     /**
@@ -83,7 +85,7 @@
      * @brief 获取纬度方向
      * @param none
      * @return 纬度方向
-     * @note 格式: 纬度方向
+     * @note N 或 S
      */
     String getLatitudeDirection(void);
     /**
@@ -91,7 +93,7 @@
      * @brief 获取经度
      * @param none
      * @return 经度
-     * @note 格式: DDDMM.MMMM(度分秒)
+     * @note 格式: DDDMM.MMMM（度和分）
      */
     String getLongitude(void);
     /**
@@ -99,7 +101,7 @@
      * @brief 获取经度方向
      * @param none
      * @return 经度方向
-     * @note 格式: 经度方向
+     * @note E 或 W
      */
     String getLongitudeDirection(void);
     /**
@@ -107,8 +109,6 @@
      * @brief 获取卫星数
      * @param none
      * @return 卫星数
-     * @note 格式: 卫星数
-     * @note 0: 无卫星, 1: 1颗卫星, 2: 2颗卫星, 3: 3颗卫星, 4: 4颗卫星, 5: 5颗卫星, 6: 6颗卫星, 7: 7颗卫星, 8: 8颗卫星, 9: 9颗卫星, 10: 10颗卫星, 11: 11颗卫星, 12: 12颗卫星, 13: 13颗卫星, 14: 14颗卫星, 15: 15颗卫星, 16: 16颗卫星, 17: 17颗卫星, 18: 18颗卫星, 19: 19颗卫星, 20: 20颗卫星
      */
     String getSatellites(void);
     /**
@@ -121,10 +121,10 @@
     String getAltitude(void);
     /**
      * @fn getGeoidSeparation
-     * @brief 获取大地高差
+     * @brief 获取大地水准面差距
      * @param none
-     * @return 大地高差
-     * @note 格式: 大地高差(米)
+     * @return 大地水准面差距
+     * @note 格式: 大地水准面差距(米)
      */
     String getGeoidSeparation(void);
     /**
@@ -132,7 +132,7 @@
      * @brief 获取定位质量
      * @param none
      * @return 定位质量
-     * @note 格式: 定位质量
+     * @note 常见值: 0 无效, 1 单点, 2 差分, 4 RTK固定, 5 RTK浮动
      */
     String getFixQuality(void);
     /**
@@ -146,20 +146,21 @@
 
 
     /**
-     * @fn CSVSlaveCfg
-     * @brief 配置CSV数据类型，可多选：SLAVE_CFG_RMC|SLAVE_CFG_GGA 等
-     * @param slave_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
+     * @fn configCSV
+     * @brief 按标志选择要写入 CSV 的 NMEA 语句，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
+     * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
      * @return none
+     * @note CSV_CFG_ALL 为 0x40，表示全部语句
      */
-    void CSVSlaveCfg(uint8_t slave_cfg);
+    void configCSV(uint8_t csv_cfg);
 
     /**
-     * @fn CSVDelCfg
-     * @brief 删除CSV数据类型，可多选
-     * @param del_cfg: 数据类型（eCSVCfg_t 或 多个按位或）
+     * @fn deleteCSV
+     * @brief 按同样的标志删除对应的 CSV 数据，可多选
+     * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个按位或）
      * @return none
      */
-    void CSVDelCfg(uint8_t del_cfg);
+    void deleteCSV(uint8_t csv_cfg);
 ```
 
 ## 兼容性
