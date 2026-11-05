@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @file printGGAData.py
-@brief 打印GGA数据 (Print GGA data)
+@brief 打印GGA数据 (Print GGA data). Centimeter-level RTK needs configNtrip.py first, or the module radio link.
 @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
 @license The MIT License (MIT)
 @version V1.0.0
@@ -10,10 +10,8 @@
 '''
 
 import sys
-import os
 import time
 
-# Add parent path so we can import DFRobot_RTK_LG_EG
 sys.path.append("../")
 from DFRobot_RTK_LG_EG import DFRobot_RTK_LG_EG
 
@@ -28,26 +26,21 @@ def main():
         print('RTK init error!')
         time.sleep(1)
     print('RTK init success.')
-    # 配置NTRIP (Config NTRIP)
-    rtk.config_ntrip(
-        host='103.45.160.41',
-        port='8002',
-        user='maplays33280',
-        password='66794',
-        mountpoint='RTCM32GRCpro'
-    )
 
     while True:
-        rtk.update_gga()
-        print('time:', rtk.get_time())
-        print('latitude:', rtk.get_latitude())
+        if not rtk.update_gga():
+            print('GGA update failed.')
+            time.sleep(0.5)
+            continue
+        print('time:', rtk.get_time())  # hhmmss.ss
+        print('latitude:', rtk.get_latitude())  # DDMM.MMMM
         print('latitudeDir:', rtk.get_latitude_direction())
-        print('longitude:', rtk.get_longitude())
+        print('longitude:', rtk.get_longitude())  # DDDMM.MMMM
         print('longitudeDir:', rtk.get_longitude_direction())
         print('satellites:', rtk.get_satellites())
         print('altitude:', rtk.get_altitude())
         print('geoid separation:', rtk.get_geoid_separation())
-        print('fix quality:', rtk.get_fix_quality())
+        print('fix quality:', rtk.get_fix_quality())  # 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
         print('diff age:', rtk.get_diff_age())
         print('--------------------------------')
         time.sleep(0.5)
