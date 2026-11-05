@@ -19,7 +19,7 @@ static DFRobot_RTK_LG_EG::sGGAData_t ggaData;
 /** 解析出的 GGA 字段指针指向此缓冲区（逗号被替换为 \\0） */
 static char ggaPayloadBuf[256];
 
-/** CRC-16 IBM: init 0xFFFF, poly 0xA001, LSB-first (与 text.py proto_crc16_ibm 一致) */
+/** CRC-16/IBM: init 0xFFFF, poly 0xA001, LSB-first */
 static uint16_t crc16Ibm(uint8_t *data, uint8_t len) {
     uint16_t crc = 0xFFFF;
     for (uint8_t i = 0; i < len; i++) {
@@ -150,12 +150,12 @@ String DFRobot_RTK_LG_EG::getDiffAge(void){
 }
 
 
-void DFRobot_RTK_LG_EG::CSVSlaveCfg(uint8_t slave_cfg){
-    sendCommand(CMD_CONFIG_CSV, &slave_cfg, 1);
+void DFRobot_RTK_LG_EG::configCSV(uint8_t csv_cfg){
+    sendCommand(CMD_CONFIG_CSV, &csv_cfg, 1);
 }
 
-void DFRobot_RTK_LG_EG::CSVDelCfg(uint8_t del_cfg){
-    sendCommand(CMD_CONFIG_DEL_CSV, &del_cfg, 1);
+void DFRobot_RTK_LG_EG::deleteCSV(uint8_t csv_cfg){
+    sendCommand(CMD_CONFIG_DEL_CSV, &csv_cfg, 1);
 }
 
 
@@ -163,7 +163,7 @@ void DFRobot_RTK_LG_EG::sendCommand(uint8_t cmd, uint8_t *data, uint8_t data_len
     // 协议 payload 最大 255，超出则丢弃避免越界
     if (data_len > 255)
         return;
-    // CRC 计算范围: cmd + payload (与 text.py build_frame 一致)
+    // CRC 计算范围: cmd + payload
     uint8_t crc_buf[256];
     uint8_t crc_len = data_len + 1;
     crc_buf[0] = cmd;
