@@ -27,6 +27,8 @@
   获取 gnss GGA的数据
   配置 CSV文件存储
 
+示例：`configNtrip.py`、`printGGAData.py`、`configCSV.py`。
+
 ## 库安装
 1. 下载库至树莓派，要使用这个库，首先要将库下载到Raspberry Pi，命令下载方法如下:
 
@@ -72,74 +74,75 @@ python3 printGGAData.py
 
     def get_time(self):
         '''!
-        @brief 获取 UTC 时间字符串（GGA 字段）
+        @brief 获取 GGA 的 UTC 时分秒，格式 hhmmss.ss
         @return 时间字符串
         '''
 
     def get_latitude(self):
         '''!
-        @brief 获取纬度（GGA 字段）
+        @brief 获取纬度，格式 DDMM.MMMM（度和分）
         @return 纬度字符串
         '''
 
     def get_latitude_direction(self):
         '''!
-        @brief 获取纬度方向 N/S（北/南）
+        @brief 获取纬度方向，N 或 S
         @return 'N' 或 'S' 或 ''
         '''
 
     def get_longitude(self):
         '''!
-        @brief 获取经度（GGA 字段）
+        @brief 获取经度，格式 DDDMM.MMMM（度和分）
         @return 经度字符串
         '''
 
     def get_longitude_direction(self):
         '''!
-        @brief 获取经度方向 E/W（东/西）
+        @brief 获取经度方向，E 或 W
         @return 'E' 或 'W' 或 ''
         '''
 
     def get_satellites(self):
         '''!
-        @brief 获取使用的卫星数量（GGA 字段）
+        @brief 获取 GGA 卫星数字符串
         @return 卫星数量字符串
         '''
 
     def get_altitude(self):
         '''!
-        @brief 获取海拔高度（米）（GGA 字段）
+        @brief 获取海拔，单位米
         @return 高度字符串
         '''
 
     def get_geoid_separation(self):
         '''!
-        @brief 获取大地水准面分离量（GGA 字段）
+        @brief 获取大地水准面差距，单位米
         @return 分离量字符串
         '''
 
     def get_fix_quality(self):
         '''!
-        @brief 获取定位质量（GGA 字段）
+        @brief 获取定位质量。常见值: 0 无效, 1 单点, 2 差分, 4 RTK固定, 5 RTK浮动
         @return 定位质量字符串
         '''
 
     def get_diff_age(self):
         '''!
-        @brief 获取差分龄期（GGA 字段）
+        @brief 获取差分龄期，单位秒
         @return 差分龄期字符串
         '''
 
-    def csv_slave_cfg(self, slave_cfg):
+    def config_csv(self, csv_cfg):
         '''!
-        @brief 配置 CSV 数据存储（可按位或组合: SLAVE_CFG_RMC | SLAVE_CFG_GGA 等）
-        @param slave_cfg: 一个或多个 SLAVE_CFG_* 标志按位或的结果
+        @brief 按标志选择要写入 CSV 的 NMEA 语句（可按位或: CSV_CFG_RMC | CSV_CFG_GGA 等）
+        @param csv_cfg: 一个或多个 CSV_CFG_* 标志按位或的结果
+        @note CSV_CFG_ALL 为 0x40，表示全部语句
         '''
 
-    def csv_del_cfg(self, del_cfg):
+    def delete_csv(self, csv_cfg):
         '''!
-        @brief 删除 CSV 数据（可按位或组合多个类型）
-        @param del_cfg: 一个或多个 SLAVE_CFG_* 标志按位或的结果
+        @brief 按同样的标志删除对应的 CSV 数据
+        @param csv_cfg: 一个或多个 CSV_CFG_* 标志按位或的结果
         '''
 ```
 
