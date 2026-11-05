@@ -33,14 +33,14 @@ CMD_GET_GGA = 0xC1
 BAUD_RATE_115200 = 115200
 VOREO_REQUEST_TIMEOUT = 10.0  # seconds
 
-# CSV config flags (can be ORed)
-SLAVE_CFG_RMC = 0x01
-SLAVE_CFG_GGA = 0x02
-SLAVE_CFG_GSV = 0x04
-SLAVE_CFG_GSA = 0x08
-SLAVE_CFG_VTG = 0x10
-SLAVE_CFG_GLL = 0x20
-SLAVE_CFG_ALL = 0x40
+# CSV config flags (can be ORed). CSV_CFG_ALL is 0x40, not the OR of the others.
+CSV_CFG_RMC = 0x01
+CSV_CFG_GGA = 0x02
+CSV_CFG_GSV = 0x04
+CSV_CFG_GSA = 0x08
+CSV_CFG_VTG = 0x10
+CSV_CFG_GLL = 0x20
+CSV_CFG_ALL = 0x40
 
 
 def _crc16_ibm(data):
@@ -228,84 +228,84 @@ class DFRobot_RTK_LG_EG(object):
 
     def get_time(self):
         '''!
-        @brief Get UTC time string (GGA field)
-        @return time string
+        @brief Get UTC time of day from GGA
+        @return time string, format hhmmss.ss
         '''
         return self._gga_data['UTC'] or ''
 
     def get_latitude(self):
         '''!
-        @brief Get latitude (GGA field)
-        @return latitude string
+        @brief Get latitude from GGA
+        @return latitude string, format DDMM.MMMM
         '''
         return self._gga_data['Latitude'] or ''
 
     def get_latitude_direction(self):
         '''!
-        @brief Get latitude direction N/S
+        @brief Get latitude direction
         @return 'N' or 'S' or ''
         '''
         return self._gga_data['LatitudeDirection'] or ''
 
     def get_longitude(self):
         '''!
-        @brief Get longitude (GGA field)
-        @return longitude string
+        @brief Get longitude from GGA
+        @return longitude string, format DDDMM.MMMM
         '''
         return self._gga_data['Longitude'] or ''
 
     def get_longitude_direction(self):
         '''!
-        @brief Get longitude direction E/W
+        @brief Get longitude direction
         @return 'E' or 'W' or ''
         '''
         return self._gga_data['LongitudeDirection'] or ''
 
     def get_satellites(self):
         '''!
-        @brief Get satellite count (GGA field)
+        @brief Get the GGA satellite-count field
         @return satellite count string
         '''
         return self._gga_data['Satellites'] or ''
 
     def get_altitude(self):
         '''!
-        @brief Get altitude in meters (GGA field)
-        @return altitude string
+        @brief Get altitude from GGA
+        @return altitude string in meters
         '''
         return self._gga_data['Altitude'] or ''
 
     def get_geoid_separation(self):
         '''!
-        @brief Get geoid separation (GGA field)
-        @return geoid separation string
+        @brief Get geoid separation from GGA
+        @return geoid separation string in meters
         '''
         return self._gga_data['GeoidSeparation'] or ''
 
     def get_fix_quality(self):
         '''!
-        @brief Get fix quality (GGA field)
-        @return fix quality string
+        @brief Get GGA fix quality
+        @return fix quality string. Common values: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
         '''
         return self._gga_data['FixQuality'] or ''
 
     def get_diff_age(self):
         '''!
-        @brief Get differential age (GGA field)
-        @return diff age string
+        @brief Get differential age from GGA
+        @return differential age string in seconds
         '''
         return self._gga_data['DiffAge'] or ''
 
-    def csv_slave_cfg(self, slave_cfg):
+    def config_csv(self, csv_cfg):
         '''!
-        @brief Config CSV data types (can OR: SLAVE_CFG_RMC | SLAVE_CFG_GGA)
-        @param slave_cfg: one or more SLAVE_CFG_* flags ORed
+        @brief Choose which NMEA sentences are written to CSV. OR flags, for example CSV_CFG_RMC | CSV_CFG_GGA
+        @param csv_cfg: one or more CSV_CFG_* flags ORed
         '''
-        self._send_command(CMD_CONFIG_CSV, [slave_cfg & 0xFF])
+        self._send_command(CMD_CONFIG_CSV, [csv_cfg & 0xFF])
 
-    def csv_del_cfg(self, del_cfg):
+    def delete_csv(self, csv_cfg):
         '''!
-        @brief Delete CSV data types (can OR multiple flags)
-        @param del_cfg: one or more SLAVE_CFG_* flags ORed
+        @brief Delete stored CSV data for the selected NMEA sentences
+        @param csv_cfg: one or more CSV_CFG_* flags ORed
         '''
-        self._send_command(CMD_CONFIG_DEL_CSV, [del_cfg & 0xFF])
+        self._send_command(CMD_CONFIG_DEL_CSV, [csv_cfg & 0xFF])
