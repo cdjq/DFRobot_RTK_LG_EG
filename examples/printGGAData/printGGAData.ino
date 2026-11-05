@@ -1,6 +1,6 @@
 /**
  * @file printGGAData.ino
- * @brief Print GGA data
+ * @brief Print GGA data. Centimeter-level RTK needs the configNtrip example first, or the module radio link.
  * @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license The MIT License (MIT)
  * @author Jay Tang(jie.tang@dfrobot.com)
@@ -26,21 +26,22 @@ void setup(){
         delay(1000);
     }
     Serial.println("RTK init success.");
-    // Configure NTRIP
-    rtk.configNtrip("103.45.160.41", "8002", "maplays33280", "66794", "RTCM32GRCpro");
-
 }
 
 void loop(){
-    rtk.updateGGA();
+    if(!rtk.updateGGA()){
+        Serial.println("GGA update failed.");
+        delay(500);
+        return;
+    }
     Serial.print("time:");
-    Serial.println(rtk.getTime());
+    Serial.println(rtk.getTime()); // hhmmss.ss
     Serial.print("latitude:");
-    Serial.println(rtk.getLatitude());
+    Serial.println(rtk.getLatitude()); // DDMM.MMMM
     Serial.print("latitudeDir:");
     Serial.println(rtk.getLatitudeDirection());
     Serial.print("longitude:");
-    Serial.println(rtk.getLongitude());
+    Serial.println(rtk.getLongitude()); // DDDMM.MMMM
     Serial.print("longitudeDir:");
     Serial.println(rtk.getLongitudeDirection());
     Serial.print("satellites:");
@@ -50,7 +51,7 @@ void loop(){
     Serial.print("geoid separation:");
     Serial.println(rtk.getGeoidSeparation());
     Serial.print("fix quality:");
-    Serial.println(rtk.getFixQuality());
+    Serial.println(rtk.getFixQuality()); // 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
     Serial.print("diff age:");
     Serial.println(rtk.getDiffAge());
     Serial.println("--------------------------------");

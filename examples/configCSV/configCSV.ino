@@ -9,30 +9,30 @@
  * @url https://github.com/DFRobot/DFRobot_RTK_LG_EG
  */
 
- #include "DFRobot_RTK_LG_EG.h"
- /* -----------------------------------------------------------
-  * |  Sensor  | Connect line | Leonardo/Mega2560/M0 | ESP32 |
-  * |   VCC    |=============>|        VCC           |  VCC  |
-  * |   GND    |=============>|        GND           |  GND  |
-  * |   RX     |=============>|     Serial1 TX1      |  D2   |
-  * |   TX     |=============>|     Serial1 RX1      |  D3   |
-  * -----------------------------------------------------------*/
- DFRobot_RTK_LG_EG rtk(&Serial1);
+#include "DFRobot_RTK_LG_EG.h"
+/* -----------------------------------------------------------
+ * |  Sensor  | Connect line | Leonardo/Mega2560/M0 | ESP32 |
+ * |   VCC    |=============>|        VCC           |  VCC  |
+ * |   GND    |=============>|        GND           |  GND  |
+ * |   RX     |=============>|     Serial1 TX1      |  D2   |
+ * |   TX     |=============>|     Serial1 RX1      |  D3   |
+ * -----------------------------------------------------------*/
+DFRobot_RTK_LG_EG rtk(&Serial1);
 
-
- void setup(){
+void setup(){
     Serial.begin(115200);
     while(rtk.begin() != 0){
         Serial.println("RTK init error!");
         delay(1000);
     }
-   Serial.println("RTK init success.");
-   // Configure CSV logging, multiple types can be ORed, e.g. SLAVE_CFG_RMC | SLAVE_CFG_GGA
-   rtk.CSVSlaveCfg(rtk.SLAVE_CFG_RMC|rtk.SLAVE_CFG_GGA);
-   // Delete CSV files
-   //rtk.CSVDelCfg(rtk.SLAVE_CFG_RMC|rtk.SLAVE_CFG_GGA);
- }
+    Serial.println("RTK init success.");
+    // CSV_CFG_RMC 0x01 RMC, CSV_CFG_GGA 0x02 GGA, CSV_CFG_GSV 0x04 GSV
+    // CSV_CFG_GSA 0x08 GSA, CSV_CFG_VTG 0x10 VTG, CSV_CFG_GLL 0x20 GLL
+    // CSV_CFG_ALL 0x40 all sentences, not the OR of the other flags
+    rtk.configCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
+    // rtk.deleteCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
+}
 
- void loop(){
+void loop(){
     delay(1000);
- }
+}
