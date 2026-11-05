@@ -38,13 +38,13 @@ public:
      * @brief CSV data type
      */
     typedef enum {
-        SLAVE_CFG_RMC = 0x01, ///< RMC data
-        SLAVE_CFG_GGA = 0x02, ///< GGA data
-        SLAVE_CFG_GSV = 0x04, ///< GSV data
-        SLAVE_CFG_GSA = 0x08, ///< GSA data
-        SLAVE_CFG_VTG = 0x10, ///< VTG data
-        SLAVE_CFG_GLL = 0x20, ///< GLL data
-        SLAVE_CFG_ALL = 0x40, ///< All data
+        CSV_CFG_RMC = 0x01, ///< RMC sentence
+        CSV_CFG_GGA = 0x02, ///< GGA sentence
+        CSV_CFG_GSV = 0x04, ///< GSV sentence
+        CSV_CFG_GSA = 0x08, ///< GSA sentence
+        CSV_CFG_VTG = 0x10, ///< VTG sentence
+        CSV_CFG_GLL = 0x20, ///< GLL sentence
+        CSV_CFG_ALL = 0x40, ///< All sentences. Value is 0x40, not the OR of the other flags
     } eCSVCfg_t;
 
     /**
@@ -52,16 +52,16 @@ public:
      * @brief GGA data structure
      */
     typedef struct {
-        char* UTC;               ///< UTC time
-        char* Latitude;          ///< Latitude
-        char* LatitudeDirection; ///< Latitude direction
-        char* Longitude;         ///< Longitude
-        char* LongitudeDirection; ///< Longitude direction
-        char* Satellites;        ///< Number of satellites
-        char* Altitude;          ///< Altitude
-        char* GeoidSeparation;   ///< Geoid separation
-        char* FixQuality;        ///< Fix quality
-        char* DiffAge;           ///< Differential age
+        char* UTC;               ///< UTC time of day, hhmmss.ss
+        char* Latitude;          ///< Latitude, DDMM.MMMM
+        char* LatitudeDirection; ///< Latitude direction, N or S
+        char* Longitude;         ///< Longitude, DDDMM.MMMM
+        char* LongitudeDirection; ///< Longitude direction, E or W
+        char* Satellites;        ///< Satellite count text
+        char* Altitude;          ///< Altitude in meters
+        char* GeoidSeparation;   ///< Geoid separation in meters
+        char* FixQuality;        ///< Fix quality: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
+        char* DiffAge;           ///< Differential age in seconds
     } sGGAData_t;
 
     /**
@@ -87,13 +87,13 @@ public:
      * @param port: port number
      * @param user: user name
      * @param password: password
-     * * @param mountpoint: mount point
+     * @param mountpoint: mount point
      * @return none
      */
     void configNtrip(String host, String port, String user, String password, String mountpoint);
     
     /**
-     * @fn update
+     * @fn updateGGA
      * @brief Update GGA data
      * @param none
      * @return true: success, false: failure
@@ -102,12 +102,13 @@ public:
 
     /**
      * @fn getTime
-     * @brief Get time
+     * @brief Get UTC time of day from GGA
      * @param none
      * @return time string
-     * @note Format: YYYY-MM-DD HH:MM:SS
+     * @note Format: hhmmss.ss
      */
     String getTime(void);
+
     /**
      * @fn getLatitude
      * @brief Get latitude
@@ -116,6 +117,7 @@ public:
      * @note Format: DDMM.MMMM (degrees & minutes)
      */
     String getLatitude(void);
+
     /**
      * @fn getLatitudeDirection
      * @brief Get latitude direction
@@ -124,6 +126,7 @@ public:
      * @note Typically 'N' or 'S'
      */
     String getLatitudeDirection(void);
+
     /**
      * @fn getLongitude
      * @brief Get longitude
@@ -132,6 +135,7 @@ public:
      * @note Format: DDDMM.MMMM (degrees & minutes)
      */
     String getLongitude(void);
+
     /**
      * @fn getLongitudeDirection
      * @brief Get longitude direction
@@ -140,62 +144,67 @@ public:
      * @note Typically 'E' or 'W'
      */
     String getLongitudeDirection(void);
+
     /**
      * @fn getSatellites
-     * @brief Get number of satellites
+     * @brief Get the GGA satellite-count field
      * @param none
-     * @return satellite count
-     * @note 0: none, 1: 1 satellite, 2: 2 satellites, 3: 3 satellites, 4: 4 satellites, 5: 5 satellites, 6: 6 satellites, 7: 7 satellites, 8: 8 satellites, 9: 9 satellites, 10: 10 satellites, 11: 11 satellites, 12: 12 satellites, 13: 13 satellites, 14: 14 satellites, 15: 15 satellites, 16: 16 satellites, 17: 17 satellites, 18: 18 satellites, 19: 19 satellites, 20: 20 satellites
+     * @return satellite count string
      */
     String getSatellites(void);
+
     /**
      * @fn getAltitude
      * @brief Get altitude
      * @param none
      * @return altitude
-     * @note Format: altitude (m)
+     * @note Altitude in meters
      */
     String getAltitude(void);
+
     /**
      * @fn getGeoidSeparation
      * @brief Get geoid separation
      * @param none
      * @return geoid separation
-     * @note Format: separation (m)
+     * @note Geoid separation in meters
      */
     String getGeoidSeparation(void);
+
     /**
      * @fn getFixQuality
      * @brief Get fix quality
      * @param none
      * @return fix quality
+     * @note Common values: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
      */
     String getFixQuality(void);
+
     /**
      * @fn getDiffAge
      * @brief Get differential age
      * @param none
      * @return differential age
-     * @note Unit: seconds
+     * @note Differential age in seconds
      */
     String getDiffAge(void);
 
 
     /**
-     * @fn CSVSlaveCfg
-     * @brief Configure CSV data types; multiple flags can be ORed, e.g. SLAVE_CFG_RMC | SLAVE_CFG_GGA
-     * @param slave_cfg: data type flags (one or more eCSVCfg_t values ORed)
+     * @fn configCSV
+     * @brief Choose which NMEA sentences are written to CSV. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
+     * @param csv_cfg: one or more eCSVCfg_t values ORed
      * @return none
      */
-    void CSVSlaveCfg(uint8_t slave_cfg);
+    void configCSV(uint8_t csv_cfg);
 
     /**
-     * @fn CSVDelCfg
-     * @brief Delete CSV data types; multiple flags can be ORed
-     * @param del_cfg: data type flags (one or more eCSVCfg_t values ORed)
+     * @fn deleteCSV
+     * @brief Delete stored CSV data for the selected NMEA sentences. OR multiple flags
+     * @param csv_cfg: one or more eCSVCfg_t values ORed
      * @return none
      */
-    void CSVDelCfg(uint8_t del_cfg);
+    void deleteCSV(uint8_t csv_cfg);
     
 
 private:
