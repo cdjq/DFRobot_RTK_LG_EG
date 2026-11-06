@@ -16,41 +16,41 @@ sys.path.append("../")
 from DFRobot_RTK_LG_EG import DFRobot_RTK_LG_EG
 
 # Raspberry Pi: /dev/ttyAMA0 or /dev/ttyS0; USB: /dev/ttyUSB0
-SERIAL_PORT = '/dev/ttyAMA0'
-BAUD = 115200
+serial_port = '/dev/ttyAMA0'
+baud_rate = 115200
 
 rtk = None
 
 
 def setup():
-    global rtk
-    rtk = DFRobot_RTK_LG_EG(port=SERIAL_PORT, baud=BAUD)
-    while rtk.begin() != 0:
-        print('RTK init error!')
-        time.sleep(1)
-    print('RTK init success.')
+  global rtk  # pylint: disable=global-statement
+  rtk = DFRobot_RTK_LG_EG(port=serial_port, baud=baud_rate)
+  while rtk.begin() != 0:
+    print('RTK init error!')
+    time.sleep(1)
+  print('RTK init success.')
 
 
 def loop():
-    if not rtk.update_gga():
-        print('GGA update failed.')
-        time.sleep(0.5)
-        return
-    print('time:', rtk.get_time())  # hhmmss.ss
-    print('latitude:', rtk.get_latitude())  # DDMM.MMMM
-    print('latitudeDir:', rtk.get_latitude_direction())
-    print('longitude:', rtk.get_longitude())  # DDDMM.MMMM
-    print('longitudeDir:', rtk.get_longitude_direction())
-    print('satellites:', rtk.get_satellites())
-    print('altitude:', rtk.get_altitude())
-    print('geoid separation:', rtk.get_geoid_separation())
-    print('fix quality:', rtk.get_fix_quality())  # 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
-    print('diff age:', rtk.get_diff_age())
-    print('--------------------------------')
+  if not rtk.update_gga():
+    print('GGA update failed.')
     time.sleep(0.5)
+    return
+  print('time:', rtk.get_time())  # hhmmss.ss
+  print('latitude:', rtk.get_latitude())  # DDMM.MMMM
+  print('latitudeDir:', rtk.get_latitude_direction())
+  print('longitude:', rtk.get_longitude())  # DDDMM.MMMM
+  print('longitudeDir:', rtk.get_longitude_direction())
+  print('satellites:', rtk.get_satellites())
+  print('altitude:', rtk.get_altitude())
+  print('geoid separation:', rtk.get_geoid_separation())
+  print('fix quality:', rtk.get_fix_quality())  # 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
+  print('diff age:', rtk.get_diff_age())
+  print('--------------------------------')
+  time.sleep(0.5)
 
 
 if __name__ == '__main__':
-    setup()
-    while True:
-        loop()
+  setup()
+  while True:
+    loop()

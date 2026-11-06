@@ -35,7 +35,7 @@ static uint16_t crc16Ibm(uint8_t *data, uint8_t len) {
     return crc;
 }
 
-DFRobot_RTK_LG_EG::DFRobot_RTK_LG_EG(HardwareSerial *serial) : _serial(serial) {}
+DFRobot_RTK_LG_EG::DFRobot_RTK_LG_EG(HardwareSerial *serial) : _serial(serial), _csvCfg(0) {}
 
 uint8_t DFRobot_RTK_LG_EG::begin(void){
     uint8_t data[2];
@@ -56,12 +56,19 @@ uint8_t DFRobot_RTK_LG_EG::begin(void){
     return 0;
 }
 
-void DFRobot_RTK_LG_EG::configNtrip(String host, String port, String user, String password, String mountpoint){
+uint8_t DFRobot_RTK_LG_EG::configNtrip(String host, String port, String user, String password, String mountpoint){
+    uint8_t resp[2];
     String data = host + "," + port + ","  + user + "," + password + "," + mountpoint;
     char buffer[data.length() + 1];
     data.toCharArray(buffer, data.length() + 1);
     DBG(buffer);
     sendCommand(CMD_CONFIG_NTRIP, (uint8_t*)buffer, data.length() + 1);
+    int len = receiveResponse(CMD_CONFIG_NTRIP, resp);
+    if (len <= 0)
+        return 1;
+    if (resp[0] != 0x01)
+        return 1;
+    return 0;
 }
 
 
@@ -150,8 +157,21 @@ String DFRobot_RTK_LG_EG::getDiffAge(void){
 }
 
 
-void DFRobot_RTK_LG_EG::configCSV(uint8_t csv_cfg){
-    sendCommand(CMD_CONFIG_CSV, &csv_cfg, 1);
+void DFRobot_RTK_LG_EG::enableSdCSV(uint8_t csv_cfg){
+    _csvCfg = csv_cfg;
+    sendCommand(CMD_CONFIG_CSV, &_csvCfg, 1);
+}
+
+uint8_t DFRobot_RTK_LG_EG::disableSdCSV(uint8_t csv_cfg){
+    uint8_t data[2];
+    sendCommand(CMD_GET_CSV_MASK, NULL, 0);
+    int len = receiveResponse(CMD_GET_CSV_MASK, data);
+    if (len <= 0)
+        return 1;
+    _csvCfg = data[0];
+    _csvCfg &= (uint8_t)~csv_cfg;
+    sendCommand(CMD_CONFIG_CSV, &_csvCfg, 1);
+    return 0;
 }
 
 void DFRobot_RTK_LG_EG::deleteCSV(uint8_t csv_cfg){
@@ -160,9 +180,6 @@ void DFRobot_RTK_LG_EG::deleteCSV(uint8_t csv_cfg){
 
 
 void DFRobot_RTK_LG_EG::sendCommand(uint8_t cmd, uint8_t *data, uint8_t data_len){
-    // 协议 payload 最大 255，超出则丢弃避免越界
-    if (data_len > 255)
-        return;
     // CRC 计算范围: cmd + payload
     uint8_t crc_buf[256];
     uint8_t crc_len = data_len + 1;
@@ -226,8 +243,7 @@ int DFRobot_RTK_LG_EG::receiveResponse(uint8_t cmd, uint8_t *data){
         return -1;
     }
 
-    // 读 payload（协议最大 255）
-    if (len > 255) return -1;
+    // 读 payload。len 为单字节，范围 0..255
     uint8_t payload[256];
     for (uint8_t i = 0; i < len; i++) {
             while (!_serial->available()) {

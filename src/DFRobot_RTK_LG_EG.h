@@ -23,12 +23,11 @@
 class DFRobot_RTK_LG_EG {
 public:
     #define CMD_HANDSHAKE           0xA0  ///< Handshake
-    #define CMD_CONFIG_GNSS         0xA1  ///< GNSS control
-    #define CMD_CONFIG_4G           0xA2  ///< 4G control
     #define CMD_CONFIG_NTRIP        0xA3  ///< NTRIP control
     #define CMD_CONFIG_CSV          0xA4  ///< CSV control
     #define CMD_CONFIG_DEL_CSV      0xA5  ///< Delete CSV file
     #define CMD_CONFIG_UART_OUT     0xA6  ///< UART full data output control
+    #define CMD_GET_CSV_MASK        0xA7  ///< Get the CSV storage mask from the device
     #define CMD_GET_GGA             0xC1  ///< Get GGA data
     #define BAUD_RATE_115200        115200 ///< Baud rate
     #define VOREO_REQUEST_TIMEOUT   10000 ///< Request timeout (ms)
@@ -88,9 +87,9 @@ public:
      * @param user: user name
      * @param password: password
      * @param mountpoint: mount point
-     * @return none
+     * @return 0: success, 1: failure
      */
-    void configNtrip(String host, String port, String user, String password, String mountpoint);
+    uint8_t configNtrip(String host, String port, String user, String password, String mountpoint);
     
     /**
      * @fn updateGGA
@@ -191,12 +190,20 @@ public:
 
 
     /**
-     * @fn configCSV
-     * @brief Choose which NMEA sentences are written to CSV. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
+     * @fn enableSdCSV
+     * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
      * @param csv_cfg: one or more eCSVCfg_t values ORed
      * @return none
      */
-    void configCSV(uint8_t csv_cfg);
+    void enableSdCSV(uint8_t csv_cfg);
+
+    /**
+     * @fn disableSdCSV
+     * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
+     * @param csv_cfg: one or more eCSVCfg_t values ORed
+     * @return 0: success, 1: failure
+     */
+    uint8_t disableSdCSV(uint8_t csv_cfg);
 
     /**
      * @fn deleteCSV
@@ -209,6 +216,7 @@ public:
 
 private:
     HardwareSerial *_serial;
+    uint8_t _csvCfg;
     void sendCommand(uint8_t cmd, uint8_t *data, uint8_t data_len);
     /** Receive one response frame, using the same protocol as sendCommand.
      *  @param cmd   Expected command byte (must match frame cmd, otherwise -1 is returned)

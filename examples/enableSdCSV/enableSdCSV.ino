@@ -1,6 +1,6 @@
 /**
- * @file configCSV.ino
- * @brief Configure CSV data logging
+ * @file enableSdCSV.ino
+ * @brief Enable saving NMEA sentences to CSV files on the SD card
  * @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @license The MIT License (MIT)
  * @author Jay Tang(jie.tang@dfrobot.com)
@@ -29,7 +29,8 @@ void setup(){
     // CSV_CFG_RMC 0x01 RMC, CSV_CFG_GGA 0x02 GGA, CSV_CFG_GSV 0x04 GSV
     // CSV_CFG_GSA 0x08 GSA, CSV_CFG_VTG 0x10 VTG, CSV_CFG_GLL 0x20 GLL
     // CSV_CFG_ALL 0x40 all sentences, not the OR of the other flags
-    rtk.configCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
+    rtk.enableSdCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
+    // rtk.disableSdCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
     // rtk.deleteCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
 }
 

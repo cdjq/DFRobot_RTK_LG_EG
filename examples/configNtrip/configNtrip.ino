@@ -26,7 +26,11 @@ void setup(){
         delay(1000);
     }
     Serial.println("RTK init success.");
-    rtk.configNtrip("103.45.160.41", "8002", "maplays33280", "66794", "RTCM32GRCpro");
+    while(rtk.configNtrip("103.45.160.41", "8002", "maplays33280", "66794", "RTCM32GRCpro") != 0){
+        Serial.println("NTRIP config error!");
+        delay(1000);
+    }
+    Serial.println("NTRIP config success.");
 }
 
 void loop(){

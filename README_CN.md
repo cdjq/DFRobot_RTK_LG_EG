@@ -5,9 +5,9 @@
 核心采用移远LG290P03AAMD模组，支持全星系多频段信号接收，最高输出频率可达20Hz（默认10Hz）。内置干扰检测与抑制算法，即使在电磁环境复杂或城市峡谷等挑战性场景中，依旧能保证定位的准确性。
 该产品适用于智能机器人导航、精准农业作业、工业园区智能AGV定位机器人等等，是企业用户快速验证定位功能和集成项目应用的理想选择。
 
-![正反面svg效果图](/resources/images/4g.jpg)
+![正反面svg效果图](/resources/images/TEL0193.png)
 
-## 产品链接(https://www.dfrobot.com.cn/goods-4254.html)
+## 产品链接(https://www.dfrobot.com)
 
     SKU：TEL0193
 
@@ -26,7 +26,7 @@
   获取 gnss GGA的数据
   配置 CSV文件存储
 
-示例：`configNtrip`、`printGGAData`、`configCSV`。
+示例：`configNtrip`、`printGGAData`、`enableSdCSV`。
 
 ## 库安装
 这里提供两种使用本库的方法：<br>
@@ -52,9 +52,9 @@
      * @param user: 用户名
      * @param password: 密码
      * @param mountpoint: 挂载点
-     * @return none
+     * @return 0: 成功, 1: 失败
      */
-    void configNtrip(String host, String port, String user, String password, String mountpoint);
+    uint8_t configNtrip(String host, String port, String user, String password, String mountpoint);
     
     /**
      * @fn updateGGA
@@ -146,13 +146,21 @@
 
 
     /**
-     * @fn configCSV
-     * @brief 按标志选择要写入 CSV 的 NMEA 语句，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
+     * @fn enableSdCSV
+     * @brief 开启将所选 NMEA 语句保存到 SD 卡 CSV，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
      * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
      * @return none
      * @note CSV_CFG_ALL 为 0x40，表示全部语句
      */
-    void configCSV(uint8_t csv_cfg);
+    void enableSdCSV(uint8_t csv_cfg);
+
+    /**
+     * @fn disableSdCSV
+     * @brief 停止将所选 NMEA 语句保存到 SD 卡 CSV。先读取设备当前存储掩码，再将传入标志的对应位置 0，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
+     * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
+     * @return 0: 成功, 1: 失败
+     */
+    uint8_t disableSdCSV(uint8_t csv_cfg);
 
     /**
      * @fn deleteCSV

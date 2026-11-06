@@ -10,9 +10,9 @@ At its core, the module uses Quectel LG290P03AAMD, supporting multi‑constellat
 
 This product is suitable for intelligent robot navigation, precision agriculture operations, industrial park AGV positioning robots, and other scenarios. It is an ideal choice for enterprise users to quickly validate positioning performance and integrate RTK into projects.
 
-![Front/back view](/resources/images/4g.jpg)
+![Front/back view](/resources/images/TEL0193.png)
 
-## Product Link (https://www.dfrobot.com.cn/goods-4254.html)
+## Product Link (https://www.dfrobot.com)
 
     SKU: TEL0193
 
@@ -32,7 +32,7 @@ This repository provides an Arduino library for the RTK module. The library main
 - Reading GNSS GGA data  
 - Configuring CSV file logging
 
-Examples: `configNtrip`, `printGGAData`, `configCSV`.
+Examples: `configNtrip`, `printGGAData`, `enableSdCSV`.
 
 ## Library Installation
 
@@ -59,9 +59,9 @@ uint8_t begin(void);
  * @param user: user name
  * @param password: password
  * @param mountpoint: mount point
- * @return none
+ * @return 0: success, 1: fail
  */
-void configNtrip(String host, String port, String user, String password, String mountpoint);
+uint8_t configNtrip(String host, String port, String user, String password, String mountpoint);
 
 /**
  * @fn updateGGA
@@ -160,13 +160,21 @@ String getFixQuality(void);
 String getDiffAge(void);
 
 /**
- * @fn configCSV
- * @brief Choose which NMEA sentences are written to CSV. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
+ * @fn enableSdCSV
+ * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
  * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
  * @return none
  * @note CSV_CFG_ALL is 0x40 and means all sentences
  */
-void configCSV(uint8_t csv_cfg);
+void enableSdCSV(uint8_t csv_cfg);
+
+/**
+ * @fn disableSdCSV
+ * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
+ * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
+ * @return 0: success, 1: fail
+ */
+uint8_t disableSdCSV(uint8_t csv_cfg);
 
 /**
  * @fn deleteCSV

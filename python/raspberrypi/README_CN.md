@@ -5,10 +5,10 @@
 核心采用移远LG290P03AAMD模组，支持全星系多频段信号接收，最高输出频率可达20Hz（默认10Hz）。内置干扰检测与抑制算法，即使在电磁环境复杂或城市峡谷等挑战性场景中，依旧能保证定位的准确性。
 该产品适用于智能机器人导航、精准农业作业、工业园区智能AGV定位机器人等等，是企业用户快速验证定位功能和集成项目应用的理想选择。
 
-![正反面svg效果图](../../resources/images/4g.jpg)
+![正反面svg效果图](../../resources/images/TEL0193.png)
 
 
-## 产品链接(https://www.dfrobot.com.cn/goods-4254.html)
+## 产品链接(https://www.dfrobot.com)
 
     SKU：TEL0193
 
@@ -27,7 +27,7 @@
   获取 gnss GGA的数据
   配置 CSV文件存储
 
-示例：`configNtrip.py`、`printGGAData.py`、`configCSV.py`。
+示例：`config_ntrip.py`、`print_gga_data.py`、`enable_sd_csv.py`。
 
 ## 库安装
 1. 下载库至树莓派，要使用这个库，首先要将库下载到Raspberry Pi，命令下载方法如下:
@@ -36,14 +36,14 @@
 sudo git clone https://github.com/DFRobot/DFRobot_RTK_LG_EG
 ```
 
-1. 打开并运行例程，要执行一个例程demo_x.py，请在命令行中输入python demo_x.py。例如，要执行 printGGAData.py例程，你需要输入:
+1. 打开并运行例程，要执行一个例程demo_x.py，请在命令行中输入python demo_x.py。例如，要执行 print_gga_data.py例程，你需要输入:
 
 ```
-python  printGGAData.py
+python  print_gga_data.py
 或
-python2 printGGAData.py
+python2 print_gga_data.py
 或
-python3 printGGAData.py
+python3 print_gga_data.py
 ```
 
 ## 方法
@@ -64,6 +64,7 @@ python3 printGGAData.py
         @param user: 用户名
         @param password: 密码
         @param mountpoint: 挂载点
+        @return 0: 成功, 1: 失败
         '''
 
     def update_gga(self):
@@ -132,11 +133,18 @@ python3 printGGAData.py
         @return 差分龄期字符串
         '''
 
-    def config_csv(self, csv_cfg):
+    def enable_sd_csv(self, csv_cfg):
         '''!
-        @brief 按标志选择要写入 CSV 的 NMEA 语句（可按位或: CSV_CFG_RMC | CSV_CFG_GGA 等）
+        @brief 开启将所选 NMEA 语句保存到 SD 卡 CSV（可按位或: CSV_CFG_RMC | CSV_CFG_GGA 等）
         @param csv_cfg: 一个或多个 CSV_CFG_* 标志按位或的结果
         @note CSV_CFG_ALL 为 0x40，表示全部语句
+        '''
+
+    def disable_sd_csv(self, csv_cfg):
+        '''!
+        @brief 停止将所选 NMEA 语句保存到 SD 卡 CSV。先读取设备当前存储掩码，再将传入标志的对应位置 0
+        @param csv_cfg: 一个或多个 CSV_CFG_* 标志按位或的结果
+        @return 0: 成功, 1: 失败
         '''
 
     def delete_csv(self, csv_cfg):

@@ -16,32 +16,32 @@ sys.path.append("../")
 from DFRobot_RTK_LG_EG import DFRobot_RTK_LG_EG, CSV_CFG_RMC, CSV_CFG_GGA
 
 # Raspberry Pi: /dev/ttyAMA0 or /dev/ttyS0; USB: /dev/ttyUSB0
-SERIAL_PORT = '/dev/ttyAMA0'
-BAUD = 115200
+serial_port = '/dev/ttyAMA0'
+baud_rate = 115200
 
 rtk = None
 
 
 def setup():
-    global rtk
-    rtk = DFRobot_RTK_LG_EG(port=SERIAL_PORT, baud=BAUD)
-    while rtk.begin() != 0:
-        print('RTK init error!')
-        time.sleep(1)
-    print('RTK init success.')
-    # CSV_CFG_RMC 0x01 RMC, CSV_CFG_GGA 0x02 GGA, CSV_CFG_GSV 0x04 GSV
-    # CSV_CFG_GSA 0x08 GSA, CSV_CFG_VTG 0x10 VTG, CSV_CFG_GLL 0x20 GLL
-    # CSV_CFG_ALL 0x40 all sentences, not the OR of the other flags
-    rtk.enable_sd_csv(CSV_CFG_RMC | CSV_CFG_GGA)
-    # rtk.disable_sd_csv(CSV_CFG_RMC | CSV_CFG_GGA)
-    # rtk.delete_csv(CSV_CFG_RMC | CSV_CFG_GGA)
+  global rtk  # pylint: disable=global-statement
+  rtk = DFRobot_RTK_LG_EG(port=serial_port, baud=baud_rate)
+  while rtk.begin() != 0:
+    print('RTK init error!')
+    time.sleep(1)
+  print('RTK init success.')
+  # CSV_CFG_RMC 0x01 RMC, CSV_CFG_GGA 0x02 GGA, CSV_CFG_GSV 0x04 GSV
+  # CSV_CFG_GSA 0x08 GSA, CSV_CFG_VTG 0x10 VTG, CSV_CFG_GLL 0x20 GLL
+  # CSV_CFG_ALL 0x40 all sentences, not the OR of the other flags
+  rtk.enable_sd_csv(CSV_CFG_RMC | CSV_CFG_GGA)
+  # rtk.disable_sd_csv(CSV_CFG_RMC | CSV_CFG_GGA)
+  # rtk.delete_csv(CSV_CFG_RMC | CSV_CFG_GGA)
 
 
 def loop():
-    time.sleep(1)
+  time.sleep(1)
 
 
 if __name__ == '__main__':
-    setup()
-    while True:
-        loop()
+  setup()
+  while True:
+    loop()

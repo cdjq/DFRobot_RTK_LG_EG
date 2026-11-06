@@ -22,7 +22,8 @@ getAltitude	KEYWORD2
 getGeoidSeparation	KEYWORD2
 getFixQuality	KEYWORD2
 getDiffAge	KEYWORD2
-configCSV	KEYWORD2
+enableSdCSV	KEYWORD2
+disableSdCSV	KEYWORD2
 deleteCSV	KEYWORD2
 
 #######################################

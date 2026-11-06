@@ -10,9 +10,9 @@ The core module is Quectel LG290P03AAMD, supporting multi‑constellation and mu
 
 This product is suitable for intelligent robot navigation, precision agriculture, industrial‑park AGV positioning robots, and more. It is an ideal choice for enterprise users to quickly validate positioning capability and integrate RTK into their applications.
 
-![Module image](../../resources/images/4g.jpg)
+![Module image](../../resources/images/TEL0193.png)
 
-## Product Link (https://www.dfrobot.com.cn/goods-4254.html)
+## Product Link (https://www.dfrobot.com)
 
     SKU: TEL0193
 
@@ -32,7 +32,7 @@ This directory provides a Python library for the RTK module on Raspberry Pi. The
 - Reading GNSS GGA data  
 - Configuring CSV file logging
 
-Examples: `configNtrip.py`, `printGGAData.py`, `configCSV.py`.
+Examples: `config_ntrip.py`, `print_gga_data.py`, `enable_sd_csv.py`.
 
 ## Library Installation
 1. Download this repository to your Raspberry Pi. To clone via git:
@@ -41,14 +41,14 @@ Examples: `configNtrip.py`, `printGGAData.py`, `configCSV.py`.
 sudo git clone https://github.com/DFRobot/DFRobot_RTK_LG_EG
 ```
 
-2. Open and run an example. To run a demo `demo_x.py`, type `python demo_x.py` in the terminal. For example, to run the `printGGAData.py` demo, you can use:
+2. Open and run an example. To run a demo `demo_x.py`, type `python demo_x.py` in the terminal. For example, to run the `print_gga_data.py` demo, you can use:
 
 ```
-python  printGGAData.py
+python  print_gga_data.py
 or
-python2 printGGAData.py
+python2 print_gga_data.py
 or
-python3 printGGAData.py
+python3 print_gga_data.py
 ```
 
 ## APIs
@@ -69,6 +69,7 @@ python3 printGGAData.py
         @param user: user name
         @param password: password
         @param mountpoint: mount point
+        @return 0: success, 1: fail
         '''
     def update_gga(self):
         '''!
@@ -136,11 +137,18 @@ python3 printGGAData.py
         @return differential age string in seconds
         '''
 
-    def config_csv(self, csv_cfg):
+    def enable_sd_csv(self, csv_cfg):
         '''!
-        @brief Choose which NMEA sentences are written to CSV. OR flags, for example CSV_CFG_RMC | CSV_CFG_GGA
+        @brief Enable saving the selected NMEA sentences to CSV files on the SD card. OR flags, for example CSV_CFG_RMC | CSV_CFG_GGA
         @param csv_cfg: one or more CSV_CFG_* flags ORed
         @note CSV_CFG_ALL is 0x40 and means all sentences
+        '''
+
+    def disable_sd_csv(self, csv_cfg):
+        '''!
+        @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Read the device mask, then set the given flag bits to 0.
+        @param csv_cfg: one or more CSV_CFG_* flags ORed
+        @return 0: success, 1: fail
         '''
 
     def delete_csv(self, csv_cfg):
