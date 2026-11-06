@@ -26,12 +26,12 @@ void setup(){
         delay(1000);
     }
     Serial.println("RTK init success.");
-    // CSV_CFG_RMC 0x01 RMC, CSV_CFG_GGA 0x02 GGA, CSV_CFG_GSV 0x04 GSV
-    // CSV_CFG_GSA 0x08 GSA, CSV_CFG_VTG 0x10 VTG, CSV_CFG_GLL 0x20 GLL
-    // CSV_CFG_ALL 0x40 all sentences, not the OR of the other flags
-    rtk.enableSdCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
-    // rtk.disableSdCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
-    // rtk.deleteCSV(rtk.CSV_CFG_RMC|rtk.CSV_CFG_GGA);
+    // eCsvCfgRmc 0x01 RMC, eCsvCfgGga 0x02 GGA, eCsvCfgGsv 0x04 GSV
+    // eCsvCfgGsa 0x08 GSA, eCsvCfgVtg 0x10 VTG, eCsvCfgGll 0x20 GLL
+    // eCsvCfgAll 0x40 all sentences, not the OR of the other flags
+    rtk.enableSdCSV(rtk.eCsvCfgRmc|rtk.eCsvCfgGga);
+    // rtk.disableSdCSV(rtk.eCsvCfgRmc|rtk.eCsvCfgGga);
+    // rtk.deleteCSV(rtk.eCsvCfgRmc|rtk.eCsvCfgGga);
 }
 
 void loop(){

@@ -147,16 +147,16 @@
 
     /**
      * @fn enableSdCSV
-     * @brief 开启将所选 NMEA 语句保存到 SD 卡 CSV，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
+     * @brief 开启将所选 NMEA 语句保存到 SD 卡 CSV，可多选：eCsvCfgRmc|eCsvCfgGga 等
      * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
      * @return none
-     * @note CSV_CFG_ALL 为 0x40，表示全部语句
+     * @note eCsvCfgAll 为 0x40，表示全部语句
      */
     void enableSdCSV(uint8_t csv_cfg);
 
     /**
      * @fn disableSdCSV
-     * @brief 停止将所选 NMEA 语句保存到 SD 卡 CSV。先读取设备当前存储掩码，再将传入标志的对应位置 0，可多选：CSV_CFG_RMC|CSV_CFG_GGA 等
+     * @brief 停止将所选 NMEA 语句保存到 SD 卡 CSV。先读取设备当前存储掩码，再将传入标志的对应位置 0，可多选：eCsvCfgRmc|eCsvCfgGga 等
      * @param csv_cfg: 数据类型（eCSVCfg_t 或 多个 eCSVCfg_t 按位或）
      * @return 0: 成功, 1: 失败
      */

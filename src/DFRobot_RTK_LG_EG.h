@@ -37,13 +37,13 @@ public:
      * @brief CSV data type
      */
     typedef enum {
-        CSV_CFG_RMC = 0x01, ///< RMC sentence
-        CSV_CFG_GGA = 0x02, ///< GGA sentence
-        CSV_CFG_GSV = 0x04, ///< GSV sentence
-        CSV_CFG_GSA = 0x08, ///< GSA sentence
-        CSV_CFG_VTG = 0x10, ///< VTG sentence
-        CSV_CFG_GLL = 0x20, ///< GLL sentence
-        CSV_CFG_ALL = 0x40, ///< All sentences. Value is 0x40, not the OR of the other flags
+        eCsvCfgRmc = 0x01, ///< RMC sentence
+        eCsvCfgGga = 0x02, ///< GGA sentence
+        eCsvCfgGsv = 0x04, ///< GSV sentence
+        eCsvCfgGsa = 0x08, ///< GSA sentence
+        eCsvCfgVtg = 0x10, ///< VTG sentence
+        eCsvCfgGll = 0x20, ///< GLL sentence
+        eCsvCfgAll = 0x40, ///< All sentences. Value is 0x40, not the OR of the other flags
     } eCSVCfg_t;
 
     /**
@@ -51,16 +51,16 @@ public:
      * @brief GGA data structure
      */
     typedef struct {
-        char* UTC;               ///< UTC time of day, hhmmss.ss
-        char* Latitude;          ///< Latitude, DDMM.MMMM
-        char* LatitudeDirection; ///< Latitude direction, N or S
-        char* Longitude;         ///< Longitude, DDDMM.MMMM
-        char* LongitudeDirection; ///< Longitude direction, E or W
-        char* Satellites;        ///< Satellite count text
-        char* Altitude;          ///< Altitude in meters
-        char* GeoidSeparation;   ///< Geoid separation in meters
-        char* FixQuality;        ///< Fix quality: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
-        char* DiffAge;           ///< Differential age in seconds
+        char* utc;               ///< UTC time of day, hhmmss.ss
+        char* latitude;          ///< Latitude, DDMM.MMMM
+        char* latitudeDirection; ///< Latitude direction, N or S
+        char* longitude;         ///< Longitude, DDDMM.MMMM
+        char* longitudeDirection; ///< Longitude direction, E or W
+        char* satellites;        ///< Satellite count text
+        char* altitude;          ///< Altitude in meters
+        char* geoidSeparation;   ///< Geoid separation in meters
+        char* fixQuality;        ///< Fix quality: 0 invalid, 1 GPS, 2 DGPS, 4 RTK fixed, 5 RTK float
+        char* diffAge;           ///< Differential age in seconds
     } sGGAData_t;
 
     /**
@@ -191,33 +191,33 @@ public:
 
     /**
      * @fn enableSdCSV
-     * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
-     * @param csv_cfg: one or more eCSVCfg_t values ORed
+     * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. OR multiple flags, for example eCsvCfgRmc | eCsvCfgGga
+     * @param csvCfg: one or more eCSVCfg_t values ORed
      * @return none
      */
-    void enableSdCSV(uint8_t csv_cfg);
+    void enableSdCSV(uint8_t csvCfg);
 
     /**
      * @fn disableSdCSV
-     * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. OR multiple flags, for example CSV_CFG_RMC | CSV_CFG_GGA
-     * @param csv_cfg: one or more eCSVCfg_t values ORed
+     * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. OR multiple flags, for example eCsvCfgRmc | eCsvCfgGga
+     * @param csvCfg: one or more eCSVCfg_t values ORed
      * @return 0: success, 1: failure
      */
-    uint8_t disableSdCSV(uint8_t csv_cfg);
+    uint8_t disableSdCSV(uint8_t csvCfg);
 
     /**
      * @fn deleteCSV
      * @brief Delete stored CSV data for the selected NMEA sentences. OR multiple flags
-     * @param csv_cfg: one or more eCSVCfg_t values ORed
+     * @param csvCfg: one or more eCSVCfg_t values ORed
      * @return none
      */
-    void deleteCSV(uint8_t csv_cfg);
+    void deleteCSV(uint8_t csvCfg);
     
 
 private:
     HardwareSerial *_serial;
     uint8_t _csvCfg;
-    void sendCommand(uint8_t cmd, uint8_t *data, uint8_t data_len);
+    void sendCommand(uint8_t cmd, uint8_t *data, uint8_t dataLen);
     /** Receive one response frame, using the same protocol as sendCommand.
      *  @param cmd   Expected command byte (must match frame cmd, otherwise -1 is returned)
      *  @param data  Payload buffer (must be at least 256 bytes)

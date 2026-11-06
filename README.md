@@ -161,16 +161,16 @@ String getDiffAge(void);
 
 /**
  * @fn enableSdCSV
- * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
+ * @brief Enable saving the selected NMEA sentences to CSV files on the SD card. Multiple flags can be ORed, e.g. eCsvCfgRmc | eCsvCfgGga
  * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
  * @return none
- * @note CSV_CFG_ALL is 0x40 and means all sentences
+ * @note eCsvCfgAll is 0x40 and means all sentences
  */
 void enableSdCSV(uint8_t csv_cfg);
 
 /**
  * @fn disableSdCSV
- * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. Multiple flags can be ORed, e.g. CSV_CFG_RMC | CSV_CFG_GGA
+ * @brief Stop saving the selected NMEA sentences to CSV files on the SD card. Reads the device mask, then sets the given flag bits to 0. Multiple flags can be ORed, e.g. eCsvCfgRmc | eCsvCfgGga
  * @param csv_cfg: data type flags (one or more eCSVCfg_t values ORed)
  * @return 0: success, 1: fail
  */

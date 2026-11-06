@@ -59,10 +59,8 @@ uint8_t DFRobot_RTK_LG_EG::begin(void){
 uint8_t DFRobot_RTK_LG_EG::configNtrip(String host, String port, String user, String password, String mountpoint){
     uint8_t resp[2];
     String data = host + "," + port + ","  + user + "," + password + "," + mountpoint;
-    char buffer[data.length() + 1];
-    data.toCharArray(buffer, data.length() + 1);
-    DBG(buffer);
-    sendCommand(CMD_CONFIG_NTRIP, (uint8_t*)buffer, data.length() + 1);
+    DBG(data.c_str());
+    sendCommand(CMD_CONFIG_NTRIP, (uint8_t*)data.c_str(), data.length() + 1);
     int len = receiveResponse(CMD_CONFIG_NTRIP, resp);
     if (len <= 0)
         return 1;
@@ -84,24 +82,24 @@ static void parseGGA(uint8_t *data, int len) {
     }
     char *fields[16];
     int n = 0;
-    char *p = ggaPayloadBuf;
-    for (int i = 0; i < 16 && p <= ggaPayloadBuf + len; i++) {
-        fields[i] = p;
+    char *pField = ggaPayloadBuf;
+    for (int i = 0; i < 16 && pField <= ggaPayloadBuf + len; i++) {
+        fields[i] = pField;
         n++;
-        while (*p && p < ggaPayloadBuf + len) p++;
-        p++;
+        while (*pField && pField < ggaPayloadBuf + len) pField++;
+        pField++;
     }
     if (n >= 14) {
-        ggaData.UTC                = fields[1];
-        ggaData.Latitude           = fields[2];
-        ggaData.LatitudeDirection  = fields[3];
-        ggaData.Longitude          = fields[4];
-        ggaData.LongitudeDirection = fields[5];
-        ggaData.FixQuality         = fields[6];
-        ggaData.Satellites         = fields[7];
-        ggaData.Altitude           = fields[9];
-        ggaData.GeoidSeparation    = fields[11];
-        ggaData.DiffAge            = fields[13];
+        ggaData.utc                = fields[1];
+        ggaData.latitude           = fields[2];
+        ggaData.latitudeDirection  = fields[3];
+        ggaData.longitude          = fields[4];
+        ggaData.longitudeDirection = fields[5];
+        ggaData.fixQuality         = fields[6];
+        ggaData.satellites         = fields[7];
+        ggaData.altitude           = fields[9];
+        ggaData.geoidSeparation    = fields[11];
+        ggaData.diffAge            = fields[13];
     }
 }
 
@@ -117,103 +115,103 @@ bool DFRobot_RTK_LG_EG::updateGGA(void){
 
 
 String DFRobot_RTK_LG_EG::getTime(void){
-    return ggaData.UTC ? String(ggaData.UTC) : String("");
+    return ggaData.utc ? String(ggaData.utc) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getLatitude(void){
-    return ggaData.Latitude ? String(ggaData.Latitude) : String("");
+    return ggaData.latitude ? String(ggaData.latitude) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getLatitudeDirection(void){
-    return ggaData.LatitudeDirection ? String(ggaData.LatitudeDirection) : String("");
+    return ggaData.latitudeDirection ? String(ggaData.latitudeDirection) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getLongitude(void){
-    return ggaData.Longitude ? String(ggaData.Longitude) : String("");
+    return ggaData.longitude ? String(ggaData.longitude) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getLongitudeDirection(void){
-    return ggaData.LongitudeDirection ? String(ggaData.LongitudeDirection) : String("");
+    return ggaData.longitudeDirection ? String(ggaData.longitudeDirection) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getSatellites(void){
-    return ggaData.Satellites ? String(ggaData.Satellites) : String("");
+    return ggaData.satellites ? String(ggaData.satellites) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getAltitude(void){
-    return ggaData.Altitude ? String(ggaData.Altitude) : String("");
+    return ggaData.altitude ? String(ggaData.altitude) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getGeoidSeparation(void){
-    return ggaData.GeoidSeparation ? String(ggaData.GeoidSeparation) : String("");
+    return ggaData.geoidSeparation ? String(ggaData.geoidSeparation) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getFixQuality(void){
-    return ggaData.FixQuality ? String(ggaData.FixQuality) : String("");
+    return ggaData.fixQuality ? String(ggaData.fixQuality) : String("");
 }
 
 String DFRobot_RTK_LG_EG::getDiffAge(void){
-    return ggaData.DiffAge ? String(ggaData.DiffAge) : String("");
+    return ggaData.diffAge ? String(ggaData.diffAge) : String("");
 }
 
 
-void DFRobot_RTK_LG_EG::enableSdCSV(uint8_t csv_cfg){
-    _csvCfg = csv_cfg;
+void DFRobot_RTK_LG_EG::enableSdCSV(uint8_t csvCfg){
+    _csvCfg = csvCfg;
     sendCommand(CMD_CONFIG_CSV, &_csvCfg, 1);
 }
 
-uint8_t DFRobot_RTK_LG_EG::disableSdCSV(uint8_t csv_cfg){
+uint8_t DFRobot_RTK_LG_EG::disableSdCSV(uint8_t csvCfg){
     uint8_t data[2];
     sendCommand(CMD_GET_CSV_MASK, NULL, 0);
     int len = receiveResponse(CMD_GET_CSV_MASK, data);
     if (len <= 0)
         return 1;
     _csvCfg = data[0];
-    _csvCfg &= (uint8_t)~csv_cfg;
+    _csvCfg &= (uint8_t)~csvCfg;
     sendCommand(CMD_CONFIG_CSV, &_csvCfg, 1);
     return 0;
 }
 
-void DFRobot_RTK_LG_EG::deleteCSV(uint8_t csv_cfg){
-    sendCommand(CMD_CONFIG_DEL_CSV, &csv_cfg, 1);
+void DFRobot_RTK_LG_EG::deleteCSV(uint8_t csvCfg){
+    sendCommand(CMD_CONFIG_DEL_CSV, &csvCfg, 1);
 }
 
 
-void DFRobot_RTK_LG_EG::sendCommand(uint8_t cmd, uint8_t *data, uint8_t data_len){
+void DFRobot_RTK_LG_EG::sendCommand(uint8_t cmd, uint8_t *data, uint8_t dataLen){
     // CRC 计算范围: cmd + payload
-    uint8_t crc_buf[256];
-    uint8_t crc_len = data_len + 1;
-    crc_buf[0] = cmd;
-    if (data && data_len > 0) {
-        for (uint8_t i = 0; i < data_len; i++)
-            crc_buf[i + 1] = data[i];
+    uint8_t crcBuf[256];
+    uint8_t crcLen = dataLen + 1;
+    crcBuf[0] = cmd;
+    if (data && dataLen > 0) {
+        for (uint8_t i = 0; i < dataLen; i++)
+            crcBuf[i + 1] = data[i];
     }
-    uint16_t crc = crc16Ibm(crc_buf, crc_len);
-    uint8_t crc_lo = (uint8_t)(crc & 0xFF);
-    uint8_t crc_hi = (uint8_t)(crc >> 8);
+    uint16_t crc = crc16Ibm(crcBuf, crcLen);
+    uint8_t crcLo = (uint8_t)(crc & 0xFF);
+    uint8_t crcHi = (uint8_t)(crc >> 8);
 
-    // 帧格式: 55 AA len cmd payload crc_lo crc_hi 0D，逐字节写入（无大缓冲区越界风险）
+    // 帧格式: 55 AA len cmd payload crcLo crcHi 0D，逐字节写入（无大缓冲区越界风险）
     _serial->write(FRAME_HEAD1);
     _serial->write(FRAME_HEAD2);
-    _serial->write(data_len);
+    _serial->write(dataLen);
     _serial->write(cmd);
-    if (data && data_len > 0)
-        _serial->write(data, data_len);
-    _serial->write(crc_lo);
-    _serial->write(crc_hi);
+    if (data && dataLen > 0)
+        _serial->write(data, dataLen);
+    _serial->write(crcLo);
+    _serial->write(crcHi);
     _serial->write(FRAME_TAIL);
 }
 
 int DFRobot_RTK_LG_EG::receiveResponse(uint8_t cmd, uint8_t *data){
     if (!data)
         return -1;
-    const unsigned long timeout_ms = VOREO_REQUEST_TIMEOUT;
+    const unsigned long timeoutMs = VOREO_REQUEST_TIMEOUT;
     unsigned long start = millis();
 
     // 同步到帧头 55 AA
     while (1) {
         if (_serial->available() < 2) {
-            if (millis() - start >= timeout_ms) return -1;
+            if (millis() - start >= timeoutMs) return -1;
             continue;
         }
         uint8_t b0 = _serial->read();
@@ -222,7 +220,7 @@ int DFRobot_RTK_LG_EG::receiveResponse(uint8_t cmd, uint8_t *data){
             continue;
         }
         if (_serial->available() < 1) {
-            if (millis() - start >= timeout_ms) return -1;
+            if (millis() - start >= timeoutMs) return -1;
             continue;
         }
         uint8_t b1 = _serial->read();
@@ -231,14 +229,14 @@ int DFRobot_RTK_LG_EG::receiveResponse(uint8_t cmd, uint8_t *data){
 
     // 读 len、cmd
     while (_serial->available() < 2) {
-        if (millis() - start >= timeout_ms) return -1;
+        if (millis() - start >= timeoutMs) return -1;
     }
     uint8_t len = _serial->read();
-    uint8_t cmd_recv = _serial->read();
+    uint8_t cmdRecv = _serial->read();
     DBG(String("recv len=") + String(len) +
-        ", cmd_recv=0x" + String(cmd_recv, HEX) +
+        ", cmdRecv=0x" + String(cmdRecv, HEX) +
         ", expect=0x" + String(cmd, HEX));
-    if (cmd_recv != cmd) {
+    if (cmdRecv != cmd) {
         DBG("cmd mismatch, drop frame");
         return -1;
     }
@@ -247,32 +245,32 @@ int DFRobot_RTK_LG_EG::receiveResponse(uint8_t cmd, uint8_t *data){
     uint8_t payload[256];
     for (uint8_t i = 0; i < len; i++) {
             while (!_serial->available()) {
-            if (millis() - start >= timeout_ms) return -1;
+            if (millis() - start >= timeoutMs) return -1;
         }
         payload[i] = _serial->read();
     }
 
-    // 读 crc_lo, crc_hi, tail
+    // 读 crcLo, crcHi, tail
     while (_serial->available() < 3) {
-        if (millis() - start >= timeout_ms) return -1;
+        if (millis() - start >= timeoutMs) return -1;
     }
-    uint8_t crc_lo = _serial->read();
-    uint8_t crc_hi = _serial->read();
+    uint8_t crcLo = _serial->read();
+    uint8_t crcHi = _serial->read();
     uint8_t tail = _serial->read();
     if (tail != FRAME_TAIL) {
-        DBG(String("tail error: 0x") + String(tail, HEX));
+        DBG(String("tail mismatch: 0x") + String(tail, HEX));
         return -1;
     }
 
-    uint16_t crc_recv = (uint16_t)crc_lo | ((uint16_t)crc_hi << 8);
-    uint8_t crc_buf[256];
-    crc_buf[0] = cmd_recv;
+    uint16_t crcRecv = (uint16_t)crcLo | ((uint16_t)crcHi << 8);
+    uint8_t crcBuf[256];
+    crcBuf[0] = cmdRecv;
     for (uint8_t i = 0; i < len; i++)
-        crc_buf[i + 1] = payload[i];
-    uint16_t crc_calc = crc16Ibm(crc_buf, len + 1);
-    DBG(String("crc_recv=0x") + String(crc_recv, HEX) +
-        ", crc_calc=0x" + String(crc_calc, HEX));
-    if (crc_calc != crc_recv) {
+        crcBuf[i + 1] = payload[i];
+    uint16_t crcCalc = crc16Ibm(crcBuf, len + 1);
+    DBG(String("crcRecv=0x") + String(crcRecv, HEX) +
+        ", crcCalc=0x" + String(crcCalc, HEX));
+    if (crcCalc != crcRecv) {
         DBG("CRC mismatch, drop frame");
         return -1;
     }
