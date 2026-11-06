@@ -191,8 +191,7 @@ MCU                | Work Well    | Work Wrong | Untested | Remarks
 ------------------ | :----------: | :--------: | :------: | :-----:
 Arduino MEGA2560   |      √       |            |          |
 FireBeetle-ESP32   |      √       |            |          |
-FireBeetle-M0      |      √       |                 |             |
-Leonardo           |      √       |                 |             |
+Leonardo           |      √       |            |          |
 
 ## History
 
